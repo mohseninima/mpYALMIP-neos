@@ -46,7 +46,7 @@ optVal = value(obj)
 % YALMIP will ignore the solver specified in opts!
 % Easy to recover original variables...
 fprintf('%s\n',repmat('+',1,50))
-opts = sdpsettings(opts,'solver','sdpa-gmp');
+opts = sdpsettings(opts,'solver','sdpa-gmp-neos');
 fprintf('SDPA-GMP solution with YALMIP:\n');
 sol = optimize(F,obj,opts);
 Pfeas = value(P)

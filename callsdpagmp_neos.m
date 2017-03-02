@@ -1,14 +1,10 @@
-function output = callsdpagmp(interfacedata)
+function output = callsdpagmp_neos(interfacedata)
 
-% CALLSDPAGMP.m Call SDPA-GMP from YALMIP
-%
+% CALLSDPAGMP_NEOS.m Send SDPA-GMP problem to NEOS solver from YALMIP 
+
 % ----------------------------------------------------------------------- %
-%        Author:    Giovanni Fantuzzi
-%                   Department of Aeronautics
-%                   Imperial College London
-%       Created:    23/08/2016
 %
-%     Copyright (C) 2016  Giovanni Fantuzzi
+%     Copyright (C) 2017 Hugo Tadashi
 % 
 %     This program is free software: you can redistribute it and/or modify
 %     it under the terms of the GNU General Public License as published by
@@ -24,8 +20,10 @@ function output = callsdpagmp(interfacedata)
 %     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 % ----------------------------------------------------------------------- %
 
-% Path to executable
-path2sdpagmp = '<set-by-installer>';
+% Check for xmlrpc-client-1.1.1.jar
+if ~exist('xmlrpc-client-1.1.1.jar','file')
+    error('Please add xmlrpc-client-1.1.1.jar to your dynamic class path');
+end
 
 % Retrieve needed data
 options = interfacedata.options;
@@ -80,7 +78,7 @@ if options.savedebug
     save sdpadebug mDIM nBLOCK bLOCKsTRUCT c F ops
 end
 
-if options.showprogress;
+if options.showprogress
     showprogress(['Calling ' interfacedata.solver.tag],options.showprogress);
 end
 
@@ -101,18 +99,28 @@ for nn=1:nmax               % loop to construc SDPA problem
 end
 
 tic
-inputSDPA  = ['sdpagmp_in.dat-s'];
-outputSDPA = ['sdpagmp_out.out'];
+inputSDPA  = 'sdpagmp_in.dat-s';
+outputSDPA = 'sdpagmp_out.out';
 header     = 'Input from YALMIP';
 
 gensdpagmpfile(inputSDPA,mDIM,nBLOCK,bLOCKsTRUCT,c,FF,header);          % write SDPA-GMP input file
-if options.verbose==0
-    system(['echo ',repmat('+',1,100),' >> sdpagmp.log']);
-    system([path2sdpagmp,'sdpa_gmp ',inputSDPA,' ',outputSDPA,' >> sdpagmp.log']);          % solve SDP
-else
-    system(['echo ',repmat('+',1,100)]);
-    system([path2sdpagmp,'sdpa_gmp ',inputSDPA,' ',outputSDPA]);          % solve SDP
-end
+
+% Send job to NEOS server and write solution to outputSDPA file
+disp('Creating NEOS server interface')
+disp('')
+neos = NeosSDPAInterface();
+
+queue = neos.get_queue();
+disp('Job queue:')
+disp('')
+disp(queue)
+
+precision = 'var';
+xml_string = build_xml_string(inputSDPA,'param.sdpa',precision);
+
+outputSDPA_filepath = [pwd filesep outputSDPA];
+neos.submit_job(xml_string,outputSDPA_filepath);
+
 % import result
 [objVal,x,X,Y,INFO] = sdpagmp_read_output(outputSDPA,full(mDIM),full(nBLOCK),full(bLOCKsTRUCT));
 solvertime = toc;
@@ -186,14 +194,41 @@ end
 % Standard interface
 output = createOutputStructure(Primal,Dual,[],problem,infostr,solverinput,solveroutput,solvertime);
 
+end
 
+function xml_string = build_xml_string(sdpa_file,param_sdpa,precision)
+% XML header
+xml_string = sprintf('<document>\n<category>%s</category>\n<solver>%s</solver>\n<inputType>%s</inputType>\n','sdp','SDPA','SPARSE_SDPA');
 
+% File in sparse SDPA format
+dat = fileread(sdpa_file);
+insert = sprintf('<dat><![CDATA[%s]]></dat>\n',dat);
+xml_string = strcat(xml_string,insert);
 
+% MATLAB binary file (not used)
+insert = sprintf('<mat><![CDATA[]]></mat>\n');
+xml_string = strcat(xml_string,insert);
 
+% param.sdpa file
+param = fileread(param_sdpa);
+insert = sprintf('<param><![CDATA[%s]]></param>\n',param);
+xml_string = strcat(xml_string,insert);
 
+% Precision
+insert = sprintf('<PRECISION><![CDATA[%s]]></PRECISION>\n',precision);
+xml_string = strcat(xml_string,insert);
 
+% Comments (not used)
+insert = sprintf('<comment><![CDATA[]]></comment>\n');
+xml_string = strcat(xml_string,insert);
 
+% End of xml
+xml_string = strcat(xml_string,'</document>');
 
+% Parse XML
+xml_string = xmlwrite(xmlreadstring(xml_string));
+
+end
 
 
 

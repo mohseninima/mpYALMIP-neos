@@ -40,7 +40,7 @@ yalmip('clear')
 % --------------------
 % Useful variables
 % --------------------
-solver = 'sdpa-gmp';
+solver = 'sdpa-gmp-neos';
 verb = 1;
 muVals   = [4];
 degPvals = [6];

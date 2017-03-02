@@ -1,67 +1,30 @@
 ================================================================================
-                             INSTALL mpYALMIP
+                             INSTALL mpYALMIP-neos
 ================================================================================
 
-DISCLAIMER: This software should work on UNIX systems (currently, SDPA-GMP is not
-available for Windows OS), but it has only been tested with the following setup
+mpYALMIP-neos has been tested with the following setup
 
-OS            : Ubuntu 14.04 
+OS            : Windows 10
 MATLAB        : 9.0 (R2016a)
-YALMIP version: 20150919
+
+================================================================================
+                          1) INSTALL mpYALMIP-neos
+================================================================================
+
+a) Add xmlrpc-client-1.1.1.jar to MATLAB dynamic class java path 
+
+In the MATLAB console, go to the folder where xmlrpc-client-1.1.1.jar is located
+and run 
+
+>> javaaddpath('xmlrpc-client-1.1.1.jar')
+
+If you do not want to run this command every time MATLAB is opened, add the 
+above line to startup.m, or if you have access to javaclasspath.txt, add an 
+entry with the location of xmlrpc-client-1.1.1.jar file. 
 
 
 ================================================================================
-                               1) REQUIREMENTS
-================================================================================
-
-Before you run the script "install_sdpa_gmp", make sure you have
-
-1) SDPA-GMP: download & install from the SDPA website: 
-             http://sdpa.sourceforge.net/download.html
-
-2) SDPA MATLAB toolbox (SDPA-M): this should be installed with the standard 
-             version of SDPA (follow the instructions online).
-
-Checks
-------
-In MATLAB, run 
-
-    >> yalmiptest
- 
-to check if YALMIP finds SDPA - if so, you have SDPA-M installed.
-
-
-================================================================================
-                          2) INSTALL mpYALMIP
-================================================================================
-
-a) Default SDPA-GMP installation
-
-The installation assumes that the SDPA-GMP executable binary file (sdpa_gmp) is 
-installed in "/usr/local/bin/". This should be the case if you issued the command
-"make install" after compiling SDPA-GMP. 
-
-In this case, add SDPA-GMP to YALMIP by running
-
->> install_sdpa_gmp 
-
-b) Custom SDPA-GMP installation
-
-If the SDPA-GMP executable binary file (sdpa_gmp) is NOT installed in the default
-location "/usr/local/bin/", you need to specify the path explicitly by running
-
->> install_sdpa_gmp('path/to/sdpa/gmp')
-
-where 'path/to/sdpa/gmp' is a string specifying the path to your SDPA-GMP
-installation.
-
-
-NOTE FOR BOTH INSTALLATIONS:
-Please ignore any compilation warnings that might be displayed.
-
-
-================================================================================
-                          3) USE mpYALMIP
+                          2) USE mpYALMIP-neos
 ================================================================================
 
 You can use SDPA-GMP like any normal solver in YALMIP. See the examples for more
@@ -73,13 +36,12 @@ more information.
 
 
 ================================================================================
-                         4) UNINSTALL mpYALMIP
+                         3) UNINSTALL mpYALMIP-neos
 ================================================================================
 
-To uninstall SDPA-GMP from YAMIP and revert YALMIP to its "factory settings", 
-simply run
+To revert YALMIP to its "factory settings", simply run
 
->> uninstall_sdpa_gmp
+>> uninstall_sdpa_gmp_neos
 
 at the Command Line.
 
