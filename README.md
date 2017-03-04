@@ -14,7 +14,7 @@ The jar executable file provided in the utils folder is from [Redstone XML-RPC L
 
 Add `xmlrpc-client-1.1.1.jar` file to `javaclasspath`
 
-    >> javaclasspath('/path_to_mpYALMIP-neos/utils/xmlrpc-client-1.1.1.jar')
+    >> javaaddpath('/path_to_mpYALMIP-neos/utils/xmlrpc-client-1.1.1.jar')
 
 Add SDPA-GMP to YALMIP by running
 
