@@ -19,6 +19,8 @@ Add `xmlrpc-client-1.1.1.jar` file to `javaclasspath`
 Add SDPA-GMP to YALMIP by running
 
     >> install_sdpa_gmp_neos 
+    
+The installer will ask for a valid email address in order to use the NEOS XML-RPC interface
 
 **Note:** please ignore any compilation warnings that might be displayed.
 
