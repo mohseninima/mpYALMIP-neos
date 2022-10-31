@@ -77,6 +77,16 @@ if ~success
     error('Could not copy callsdpagmp_neos.m to the correct location.')
 end
 
+
+% ----------------------------------------------------------------------- %
+% CREATE EMAIL FILE IN UTILS PATH
+% ----------------------------------------------------------------------- %
+fid = fopen([pwd,filesep,'utils',filesep,'neos_email.dat'],'w'); 
+email = input('Insert email for NEOS results: ','s');
+fprintf(fid,'%s',email);
+fclose(fid);
+
+
 % ----------------------------------------------------------------------- %
 % ADD UTILS TO MATLAB PATH
 % ----------------------------------------------------------------------- %
