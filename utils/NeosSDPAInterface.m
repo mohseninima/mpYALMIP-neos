@@ -39,7 +39,7 @@ classdef NeosSDPAInterface
             % Query the webpage for the results
             url = sprintf('https://www.neos-server.org/neos/jobs/%d/%d.html', job - mod(job, 10000), job);
             result_page = urlread(url);
-            result = regexp(result_page, '(?<=<PRE>).*(?=<\/PRE>)', 'match');       
+            result = regexp(result_page, '(?<=<pre>).*(?=<\/pre>)', 'match');       
             
             % Open file
             fid=fopen(filename, 'w');
