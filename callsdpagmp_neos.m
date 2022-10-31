@@ -200,6 +200,11 @@ function xml_string = build_xml_string(sdpa_file,param_sdpa,precision)
 % XML header
 xml_string = sprintf('<document>\n<category>%s</category>\n<solver>%s</solver>\n<inputType>%s</inputType>\n','sdp','SDPA','SPARSE_SDPA');
 
+% Add email
+email = fileread('neos_email.dat');
+insert = sprintf('<email> %s </email>',email);
+xml_string = strcat(xml_string,insert);
+
 % File in sparse SDPA format
 dat = fileread(sdpa_file);
 insert = sprintf('<dat><![CDATA[%s]]></dat>\n',dat);
